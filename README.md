@@ -113,3 +113,44 @@ not "yet" at the level of Posix.1g or X/Open XNS Issue 5.
   instead of t_uscalar_t, some of the printf formats of these value
   might generate warnings from your compiler, since you are printing
   a long without a corresponding long format specifier.
+
+# Issues when compiling source files and the corresponding resolutions
+## cd ../libfree
+
+```shell
+inet_ntop.c: In function ‘inet_ntop’:
+inet_ntop.c:60:9: error: argument ‘size’ doesn’t match prototype
+  size_t size;
+```
+Resolution : `inet_ntop.c` on line 61 : `size_t size` -> `socklen_t size`
+
+If you run this program on Mac, for this step error message is a little different. 
+Anyway, the resoltion is the same.
+```shell
+inet_ntop.c:56:1: error: conflicting types for 'inet_ntop'
+inet_ntop(af, src, dst, size)
+^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/
+Developer/SDKs/MacOSX10.10.sdk/usr/include/arpa/inet.h:77:13: note: 
+      previous declaration is here
+const char      *inet_ntop(int, const void *, char *, socklen_t);
+```
+
+## cd ../libroute
+
+```shell
+In file included from get_rtaddrs.c:1:0:
+unproute.h:3:45: fatal error: net/if_dl.h: No such file or directory
+ #include <net/if_dl.h>  /* sockaddr_sdl{} */
+```
+
+leave it alone, no fix this
+
+## cd ../intro
+
+```shell
+~/git/unpv13e/intro$ ./daytimetcpcli 127.0.0.1
+connect error: Connection refused
+``` 
+
+Should start server first. `make daytimetcpsrv` and `sudo ./daytimetcpsrv`
